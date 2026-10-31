@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meiers Ludothek</title>
+<meta name="theme-color" content="#FFF7E8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17152C" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ludothek">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF7E8; --card:#FFFFFF; --ink:#1E1B3A; --muted:#6B6885; --line:#EADFC8; --soft:#F6EBD3;
+  --blue:#3D5AFE; --red:#FF5D5D; --yellow:#FFD23F; --mint:#9DE0D0; --purple:#9B6BFF;
+  --onBlue:#FFFFFF; --onRed:#FFFFFF; --onYellow:#3A2C00; --onMint:#0B4237; --onPurple:#FFFFFF;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#17152C; --card:#221F3D; --ink:#FFF7E8; --muted:#A9A5C7; --line:#35315A; --soft:#2B2850; color-scheme:dark;}
+}
+:root[data-theme="dark"]{--bg:#17152C; --card:#221F3D; --ink:#FFF7E8; --muted:#A9A5C7; --line:#35315A; --soft:#2B2850; color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:100px;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,.disp{font-family:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;margin:0;line-height:1.05;letter-spacing:-.02em}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px}
+
+header.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:6px 0 18px}
+header.top h1{font-size:clamp(36px,11vw,52px);font-weight:800;line-height:.9}
+header.top .count{margin-top:8px;color:var(--muted);font-size:15px}
+.help{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--yellow);color:var(--onYellow);font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:22px;box-shadow:0 3px 0 var(--ink)}
+.help:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+
+h2{font-size:26px;font-weight:800;margin:4px 0 14px}
+h3{font-size:19px;font-weight:800}
+.panel{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1 1 auto;min-width:0}
+.btn{border:2px solid var(--ink);border-radius:999px;padding:10px 18px;font-weight:700;background:var(--ink);color:var(--bg);box-shadow:0 3px 0 var(--ink)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.btn.alt{background:var(--card);color:var(--ink)}
+.btn.red{background:var(--red);color:var(--onRed)}
+.btn.yellow{background:var(--yellow);color:var(--onYellow)}
+.btn.small{padding:6px 13px;font-size:15px}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;padding:4px}
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=search],select,textarea{
+  width:100%;resize:vertical;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 13px}
+input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
+label{display:block;font-size:14px;color:var(--muted);margin:12px 0 4px;font-weight:500}
+label.check{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--ink);background:transparent;border-radius:999px;padding:5px 12px;font-size:15px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.chip small{opacity:.7}
+.meta{color:var(--muted);font-size:14px}
+.empty{color:var(--muted);text-align:center;padding:24px 8px}
+
+/* Segment-Schalter für Unterbereiche */
+.seg{display:flex;border:2px solid var(--ink);border-radius:999px;padding:3px;margin-bottom:16px;background:var(--card)}
+.seg a{flex:1;text-align:center;padding:8px 6px;border-radius:999px;text-decoration:none;color:var(--ink);font-weight:700}
+.seg a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+
+/* Spielschachteln */
+.searchrow{display:flex;gap:8px;margin-bottom:12px}
+.searchrow input{flex:1}
+.list{display:grid;gap:10px}
+.box{border:2px solid var(--ink);border-radius:16px;transform:rotate(var(--r,0deg));transition:transform .15s}
+.box.open{transform:none}
+.box .head{display:flex;align-items:center;gap:6px;padding:10px 8px 10px 14px}
+.box .gbtn{flex:1;min-width:0;background:none;border:0;text-align:left;padding:0;color:inherit}
+.box .name{display:block;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:19px;line-height:1.1}
+.box .sub{display:block;font-size:13px;opacity:.88;margin-top:2px}
+.b-brett{background:var(--blue);color:var(--onBlue)}
+.b-karten{background:var(--red);color:var(--onRed)}
+.b-wuerfel{background:var(--yellow);color:var(--onYellow)}
+.b-party{background:var(--mint);color:var(--onMint)}
+.b-video{background:var(--purple);color:var(--onPurple)}
+.fav{background:none;border:0;font-size:24px;line-height:1;padding:6px;color:currentColor;opacity:.45}
+.fav[aria-pressed="true"]{opacity:1;color:var(--yellow);text-shadow:0 0 0 var(--ink),1px 1px 0 var(--ink)}
+.b-wuerfel .fav[aria-pressed="true"]{color:var(--onYellow)}
+.badge{display:inline-block;font-size:11px;font-weight:700;background:var(--card);color:var(--ink);border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:3px;font-family:"DM Sans",sans-serif}
+.detail{background:var(--card);color:var(--ink);margin:0 6px 6px;border-radius:12px;padding:12px 14px}
+.detail dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 12px}
+.detail dt{color:var(--muted);font-size:14px}
+.detail dd{margin:0}
+.rules{white-space:pre-wrap;background:var(--soft);border-radius:10px;padding:10px 12px;margin:4px 0 12px}
+.stars{color:#E0A800;letter-spacing:1px}
+details.more{margin-top:18px}
+details.more>summary{cursor:pointer;font-weight:700;padding:10px 0;list-style:none}
+details.more>summary::before{content:"+ "}
+details.more[open]>summary::before{content:"– "}
+
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--card);font-size:22px;font-weight:700;box-shadow:0 3px 0 var(--ink)}
+.stepper button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.stepper output{font-family:"Bricolage Grotesque",sans-serif;font-size:34px;font-weight:800;min-width:2ch;text-align:center}
+
+.draw{position:relative;border:2px solid var(--ink);border-radius:24px;padding:30px 20px;text-align:center;color:#fff;background:var(--blue);overflow:hidden;min-height:180px;display:flex;flex-direction:column;justify-content:center;gap:8px;box-shadow:0 5px 0 var(--ink)}
+.draw::before,.draw::after{content:"";position:absolute;border-radius:50%}
+.draw::before{width:150px;height:150px;background:var(--yellow);top:-70px;right:-40px}
+.draw::after{width:100px;height:100px;background:var(--red);bottom:-50px;left:-30px}
+.draw .big{position:relative;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(30px,9vw,50px);line-height:1;word-break:break-word}
+.draw .hint{position:relative;font-size:15px}
+.draw.landed{animation:land .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes land{0%{transform:scale(.93) rotate(-1deg)}100%{transform:scale(1)}}
+.pick{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:2px dashed var(--line)}
+.pick:first-of-type{border-top:0}
+.dot{width:12px;height:12px;border-radius:4px;border:2px solid var(--ink);flex:none}
+
+.player{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:2px dashed var(--line)}
+.player:first-child{border-top:0}
+.token{width:32px;height:40px;border-radius:16px 16px 6px 6px;border:2px solid var(--ink);flex:none}
+.token.sm{width:20px;height:24px;border-radius:10px 10px 4px 4px}
+.pts{font-family:"Bricolage Grotesque",sans-serif;font-size:40px;font-weight:800;min-width:3ch;text-align:right}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.quick button{border:2px solid var(--ink);background:var(--card);border-radius:10px;padding:3px 10px;font-weight:700;font-size:15px}
+.quick input{width:70px;padding:4px 8px;border-radius:10px}
+.rate{background:var(--yellow);color:var(--onYellow)}
+.rate .meta{color:var(--onYellow);opacity:.8}
+.rateStars{display:flex;gap:4px;margin:10px 0}
+.rateStars button{background:none;border:0;font-size:40px;line-height:1;color:var(--onYellow);opacity:.3;padding:2px}
+.rateStars button[aria-pressed="true"]{opacity:1}
+
+.figs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.fig{border:2px solid var(--ink);border-radius:16px;padding:12px}
+.fig:nth-child(1){background:var(--blue);color:var(--onBlue)} .fig:nth-child(2){background:var(--red);color:var(--onRed)} .fig:nth-child(3){background:var(--yellow);color:var(--onYellow)}
+.fig b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:32px;font-weight:800;line-height:1}
+.fig span{font-size:13px}
+.entry{padding:10px 0;border-top:2px dashed var(--line)}
+.entry:first-child{border-top:0}
+.lg{background:none;border:0;padding:0;text-align:left;width:100%;color:inherit}
+.bar{display:block;height:10px;border-radius:5px;background:var(--mint);border:2px solid var(--ink);margin-top:5px}
+.lg[aria-pressed="true"] .bar{background:var(--blue)}
+
+.night{border-left-width:8px;border-left-color:var(--purple)}
+.night.past{opacity:.6}
+.date{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px}
+.guest[aria-pressed="true"]{background:var(--mint);color:var(--onMint)}
+
+.dice{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;padding:10px 0 4px}
+.die{width:70px;height:70px;border-radius:16px;background:var(--card);border:2px solid var(--ink);box-shadow:0 3px 0 var(--ink);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:10px}
+.die span{width:12px;height:12px;border-radius:50%;place-self:center}
+.die span.on{background:var(--ink)}
+.die.roll{animation:roll .5s ease}
+@keyframes roll{50%{transform:rotate(-25deg) scale(.9)}}
+.sum{text-align:center;color:var(--muted);margin-top:6px}
+.timer{font-family:"Bricolage Grotesque",sans-serif;font-size:64px;font-weight:800;text-align:center;line-height:1;margin:8px 0}
+.starter{font-family:"Bricolage Grotesque",sans-serif;font-size:30px;font-weight:800;text-align:center;min-height:40px;margin:10px 0}
+.team{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:2px dashed var(--line)}
+.team:first-child{border-top:0}
+
+/* Anleitung */
+.sheet{position:fixed;inset:0;z-index:30;background:rgba(23,21,44,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.sheet .card{background:var(--bg);border:2px solid var(--ink);border-bottom:0;border-radius:24px 24px 0 0;max-width:640px;width:100%;max-height:88vh;overflow:auto;padding:20px 18px calc(24px + env(safe-area-inset-bottom,0px))}
+.sheet h2{font-size:30px}
+.how{display:grid;gap:10px;margin:14px 0}
+.how div{border:2px solid var(--ink);border-radius:16px;padding:12px 14px}
+.how b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:18px;font-weight:800;margin-bottom:2px}
+.how div:nth-child(1){background:var(--blue);color:var(--onBlue)}
+.how div:nth-child(2){background:var(--red);color:var(--onRed)}
+.how div:nth-child(3){background:var(--yellow);color:var(--onYellow)}
+.how div:nth-child(4){background:var(--mint);color:var(--onMint)}
+.how div:nth-child(5){background:var(--card)}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:2px solid var(--ink);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:14px;color:var(--ink);text-decoration:none;font-size:13px;font-weight:700;border:2px solid transparent}
+nav.tabs a i{width:22px;height:14px;border-radius:4px;border:2px solid var(--ink);display:block}
+nav.tabs a[aria-current="page"]{border-color:var(--ink);background:var(--card);box-shadow:0 3px 0 var(--ink)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><h1>Meiers<br>Ludothek</h1><div class="count" id="stat"></div></div>
+    <button class="help" data-act="help" aria-label="Anleitung öffnen">?</button>
+  </header>
+  <main id="view"></main>
+</div>
+
+<nav class="tabs" aria-label="Bereiche"><div class="in">
+  <a href="#sammlung" data-tab="sammlung"><i style="background:var(--blue)"></i>Sammlung</a>
+  <a href="#auslosen" data-tab="spielen"><i style="background:var(--red)"></i>Spielen</a>
+  <a href="#logbuch" data-tab="logbuch"><i style="background:var(--yellow)"></i>Logbuch</a>
+  <a href="#helfer" data-tab="helfer"><i style="background:var(--mint)"></i>Helfer</a>
+</div></nav>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="card">
+    <div class="row"><h2 class="grow" id="sheetTitle">So funktioniert’s</h2><button class="link" data-act="closeHelp">Schliessen</button></div>
+    <p style="margin:6px 0 0">Eure Spielesammlung im Handy: nachschauen, was es gibt, gemeinsam etwas aussuchen und festhalten, wer gewonnen hat.</p>
+    <div class="how">
+      <div><b>Sammlung</b>Alle Spiele mit Standort, Personen und Dauer. Tippt auf ein Spiel für Details, Hausregeln und Bearbeiten. Der Stern markiert Lieblinge.</div>
+      <div><b>Spielen</b>Unter «Auslosen» sagt ihr, wie viele ihr seid und wie viel Zeit ihr habt. Die App zeigt alle passenden Spiele oder lost eins aus. Unter «Punkte» zählt ihr mit, am Schluss gibt’s Sterne für die Partie.</div>
+      <div><b>Logbuch</b>Was ihr wann gespielt habt, wie oft und wer am meisten gewinnt.</div>
+      <div><b>Helfer</b>Wer beginnt, Teams bilden, Würfel und Sanduhr. Unter «Abende» plant ihr den nächsten Spieleabend.</div>
+      <div><b>Gut zu wissen</b>Alles bleibt auf diesem Gerät gespeichert. Ein Backup macht ihr ganz unten in der Sammlung. Auf den Homebildschirm: iPhone in Safari über «Teilen» und «Zum Home-Bildschirm», Android in Chrome über das Menü und «App installieren».</div>
+    </div>
+    <button class="btn yellow" data-act="closeHelp" style="width:100%">Los geht’s</button>
+  </div>
+</div>
+
+<script>
+const KEY = 'spielrunde-v1';
+const COLORS = ['var(--red)','var(--blue)','var(--yellow)','var(--mint)','var(--purple)','#FF9F43'];
+const TYPES = ['Brett','Karten','Würfel','Party','Video'];
+const TCOL = {Brett:'var(--blue)',Karten:'var(--red)','Würfel':'var(--yellow)',Party:'var(--mint)',Video:'var(--purple)'};
+const uid = () => Math.random().toString(36).slice(2, 9);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const bcls = t => 'b-' + ({'Würfel':'wuerfel'}[t] || String(t||'brett').toLowerCase());
+const normName = s => String(s||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9äöüß]+/g,' ').trim();
+const players = g => g.min == null ? 'je nach Spiel' : (g.min === g.max ? `${g.min} Pers.` : `${g.min}–${g.max} Pers.`);
+const NOLOC = 'Ohne Standort';
+const durText = g => g.dur ? (g.durApprox ? 'ca. ' : '') + g.dur + ' Min.' : '';
+const starsTxt = n => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+const dateTxt = t => new Date(t).toLocaleDateString('de-CH',{day:'numeric',month:'short',year:'numeric'});
+const hash = s => { let h = 0; for (const c of s) h = (h*31 + c.charCodeAt(0)) | 0; return Math.abs(h); };
+const tilt = g => ((hash(g.id) % 9) - 4) * 0.15 + 'deg';
+
+/* Erfassungsstand: Name | min | max | Kategorie | Standort | Art (B/K/W) | Zusatzinfo | vorläufig */
+const CATALOG = `7 Wonders Duel|2|2|Strategiespiel, Kartendrafting|Schrank|B
+Alles im Eimer|3|6|Kartenspiel, Ärgerspiel|Schrank|K
+Alhambra|2|6|Lege- und Aufbauspiel|Schrank|B
+Aqualin|2|2|Taktisches Legespiel|Schrank|B
+Azul|2|4|Legespiel, Strategie|Schrank|B
+Azul: Der Sommerpavillon|2|4|Legespiel, Strategie|Schrank|B
+Brändi Dog|2|4|Team- und Brettspiel|Schrank|B
+Bumbesi|3|6|Karten- und Ärgerspiel|Schrank|K
+Café International|2|4|Lege- und Taktikspiel|Schrank|B
+Can’t Stop|2|4|Würfel- und Risikospiel|Schrank|W
+Carcassonne|2|5|Lege- und Strategiespiel|Schrank|B
+Confusion|2|5|Reaktions- und Würfelspiel|Schrank|W
+CuBirds|2|5|Kartensammelspiel|Schrank|K
+Das verrückte Labyrinth|2|4|Wege- und Suchspiel|Schrank|B
+Der zerstreute Pharao|1|5|Merk- und Schiebespiel|Schrank|B
+Die heisse Schlacht am kalten Buffet|2|6|Würfel- und Ärgerspiel|Schrank|W
+Die Siedler von Catan|3|4|Aufbau- und Handelsspiel|Schrank|B
+Easy Peasy|2|6|Karten- und Ablegespiel|Schublade|K
+Halali!|2|2|Taktisches Brettspiel|Schrank|B
+Heckmeck am Bratwurmeck|2|7|Würfel- und Risikospiel|Schrank|W
+Heimlich & Co.|2|7|Deduktions- und Bluffspiel|Schrank|B
+Hexentanz|3|6|Merk- und Laufspiel|Schrank|B
+Hick Hack in Gackelwack|2|6|Karten- und Bluffspiel|Schrank|K
+Holmes: Sherlock gegen Moriarty|2|2|Taktisches Kartenspiel|Schrank|K
+Jammerlappen|2|6|Karten- und Ablegespiel|Schublade|K
+Just 4 Fun Colours|2|2|Abstraktes Setzspiel|Schrank|B
+Kakerlakenpoker|2|6|Bluff- und Kartenspiel|Schrank|K
+Karuba|2|4|Lege- und Familienspiel|Schrank|B
+Karriere Poker|4|8|Karten- und Verhandlungsspiel|Schrank|K
+Keltis: Der Weg der Steine|2|4|Brett- und Sammelspiel|Schrank|B
+Kendo|2|4|Abstraktes Strategiespiel|Schrank|B
+Kingdomino|2|4|Lege- und Strategiespiel|Schrank|B
+Las Vegas|2|5|Würfel- und Zockerspiel|Schrank|W
+Lost Cities|2|2|Taktisches Kartenspiel|Schrank|K
+Lost Cities: Roll & Write|2|5|Würfelspiel, Roll-and-Write|Schrank|W
+Mankomania|2|4|Wirtschafts- und Partyspiel|Schrank|B
+Paris: Die Stadt der Lichter|2|2|Taktisches Legespiel|Schrank|B
+Pecunia non olet|2|6|Karten- und Wirtschaftsspiel|Schrank|K
+Phase 10|2|6|Kartensammelspiel|Schrank|K
+Rosenkönig|2|2|Taktisches Legespiel|Schrank|B
+Rummy|2|4|Zahlenlegespiel|Schrank|B
+Sequence|2|12|Karten- und Strategiespiel|Schrank|B
+Schweine-Bammel|2|6|Karten- und Ablegespiel|Schrank|K
+Skull King|2|6|Stichkartenspiel|Schrank|K
+Skyjo|2|8|Kartenspiel|Schrank|K
+Splendor|2|4|Strategie- und Sammelspiel|Schrank|B
+Targi|2|2|Strategiespiel, Worker-Placement|Schrank|K
+The Border|2|4|Würfelspiel, Roll-and-Write|Schrank|W
+UGO!|2|4|Stichkartenspiel|Schrank|K
+Vier gewinnt 3D / Sogo|2|2|Räumliches Strategiespiel|Schrank|B|Titel noch nicht abschliessend identifiziert|1
+Wie verhext!|3|5|Rollenwahl- und Bluffspiel|Schrank|K
+Zooloretto Duell|2|2|Lege- und Taktikspiel|Schrank|B
+Zug um Zug|2|5|Streckenbau- und Strategiespiel|Schrank|B
+6 nimmt!|2|10|Zahlen- und Ärgerkartenspiel|Schublade|K
+6 nimmt! Baron Oxx|2|10|Taktisches Kartenspiel|Schublade|K
+Beaver Gang (Biberbande)|2|6|Gedächtnis- und Kartenspiel|Schublade|K
+Bohnanza|2|7|Handels- und Verhandlungsspiel|Schublade|K
+Bohnanza: Das Duell|2|2|Handels- und Taktikspiel|Schublade|K
+Café International: Das Kartenspiel|2|5|Karten- und Legespiel|Schublade|K
+David & Goliath|3|6|Stichkartenspiel|Schublade|K
+Deal and Steal|2|4|Karten- und Ärgerspiel|Schublade|K
+Drecksau|2|4|Karten- und Ärgerspiel|Schublade|K
+Frantic|2|8|Aktions- und Ablegekartenspiel|Schublade|K|Grundspiel und Zusatzkarten vorhanden
+Gold|2|5|Gedächtnis- und Sammelspiel|Schublade|K
+Hanabi|2|5|Kooperatives Kartenspiel|Schublade|K
+Jinx|2|4|Würfel- und Sammelspiel|Schublade|W
+Keltis: Das Kartenspiel|2|4|Zahlenreihen- und Sammelspiel|Schublade|K
+Kombio|2|6|Karten- und Taktikspiel|Schublade|K
+L.A.M.A.|2|6|Karten- und Ablegespiel|Schublade|K
+Mada|2|5|Karten- und Risikospiel|Schublade|K
+Mamma Mia!|2|5|Gedächtnis- und Kartenspiel|Schublade|K
+Maus au Chocolat|2|6|Karten- und Sammelspiel|Schublade|K
+OANS|2|10|Ablegekartenspiel|Schublade|K
+Potato Man|2|5|Stichkartenspiel|Schublade|K
+Qwixx|2|5|Würfelspiel, Roll-and-Write|Schublade|W
+Rage|3|8|Stich- und Vorhersagespiel|Schublade|K
+Schräge Vögel|2|5|Karten- und Sammelspiel|Schublade|K
+Scrabble Karten|2|6|Wort- und Sprachspiel|Schublade|K
+Skip-Bo|2|6|Karten- und Ablegespiel|Schublade|K
+Take 5!|2|6|Zahlen- und Taktikkartenspiel|Schublade|K
+Take That|2|4|Karten- und Ärgerspiel|Schublade|K
+The Game|1|5|Kooperatives Kartenspiel|Schublade|K
+Tichu|4|4|Team- und Stichkartenspiel|Schublade|K
+Töggeli-Trophy|2|4|Karten- und Sammelspiel|Schublade|K
+Tutto!|2|10|Würfel- und Risikospiel|Schublade|W
+Twenty One|2|6|Würfelspiel, Roll-and-Write|Schublade|W
+UNO|2|10|Karten- und Ablegespiel|Schublade|K
+UNO Flip!|2|10|Karten- und Ablegespiel|Schublade|K
+Volle Wolle|2|6|Würfel- und Risikospiel|Schublade|W
+Ziegen Kriegen|3|6|Stich- und Kartenspiel|Schublade|K
+Joker (klassische Spielkarten)|||Klassische Kartenspiele|Schublade|K|Spielerzahl hängt vom gespielten Kartenspiel ab`;
+
+/* Dauer in Minuten: Herstellerangabe, u = Richtwert (ca.) */
+const DUR = `7 Wonders Duel|30
+Alles im Eimer|20|u
+Alhambra|60
+Aqualin|20
+Azul|45
+Azul: Der Sommerpavillon|45
+Brändi Dog|60|u
+Bumbesi|30|u
+Café International|45|u
+Can’t Stop|30
+Carcassonne|35
+Confusion|15|u
+CuBirds|20
+Das verrückte Labyrinth|30
+Der zerstreute Pharao|20|u
+Die heisse Schlacht am kalten Buffet|30|u
+Die Siedler von Catan|75
+Easy Peasy|20|u
+Halali!|20|u
+Heckmeck am Bratwurmeck|30
+Heimlich & Co.|30
+Hexentanz|20|u
+Hick Hack in Gackelwack|30|u
+Holmes: Sherlock gegen Moriarty|30
+Jammerlappen|20|u
+Just 4 Fun Colours|20|u
+Kakerlakenpoker|20
+Karuba|40
+Karriere Poker|45|u
+Keltis: Der Weg der Steine|30
+Kendo|20|u
+Kingdomino|20
+Las Vegas|30
+Lost Cities|30
+Lost Cities: Roll & Write|20
+Mankomania|60|u
+Paris: Die Stadt der Lichter|30
+Pecunia non olet|20|u
+Phase 10|45|u
+Rosenkönig|30
+Rummy|60|u
+Sequence|30
+Schweine-Bammel|20|u
+Skull King|45
+Skyjo|30
+Splendor|30
+Targi|60
+The Border|20|u
+UGO!|30|u
+Vier gewinnt 3D / Sogo|20|u
+Wie verhext!|45
+Zooloretto Duell|30|u
+Zug um Zug|45
+6 nimmt!|45
+6 nimmt! Baron Oxx|30|u
+Beaver Gang (Biberbande)|20|u
+Bohnanza|45
+Bohnanza: Das Duell|45
+Café International: Das Kartenspiel|20|u
+David & Goliath|30|u
+Deal and Steal|20|u
+Drecksau|20|u
+Frantic|30|u
+Gold|15|u
+Hanabi|25
+Jinx|20|u
+Keltis: Das Kartenspiel|20
+Kombio|20|u
+L.A.M.A.|20
+Mada|20|u
+Mamma Mia!|30|u
+Maus au Chocolat|20|u
+OANS|20|u
+Potato Man|30|u
+Qwixx|15
+Rage|45|u
+Schräge Vögel|20
+Scrabble Karten|20|u
+Skip-Bo|30|u
+Take 5!|45
+Take That|20|u
+The Game|20
+Tichu|60
+Töggeli-Trophy|20|u
+Tutto!|30|u
+Twenty One|20|u
+UNO|30
+UNO Flip!|30
+Volle Wolle|30|u
+Ziegen Kriegen|30|u`;
+
+function newGame(o){
+  return {id:uid(), name:o.name, type:o.type||'Brett', kategorie:o.kategorie||'', standort:o.standort||'',
+    min:o.min ?? null, max:o.max ?? null, dur:o.dur ?? null, note:o.note||'', rules:o.rules||'', tentative:!!o.tentative, durApprox:!!o.durApprox, played:0, fav:!!o.fav};
+}
+function catalogRows(){
+  const T = {B:'Brett',K:'Karten',W:'Würfel'};
+  return CATALOG.split('\n').map(l => {
+    const [name,min,max,kategorie,standort,t,note,v] = l.split('|');
+    return {name, min:min?+min:null, max:max?+max:null, kategorie, standort, type:T[t], note:note||'', tentative:v==='1'};
+  });
+}
+function defaults(){
+  return { v:0, seenIntro:false, games:[], finder:{players:4,time:60,types:[]}, nights:[], score:{game:'',gameId:null,lowWins:false,players:[]}, history:[] };
+}
+const findGame = name => S.games.find(g => normName(g.name) === normName(name));
+function migrate(){
+  if ((S.v||0) < 2) {
+    const SAMPLE = ['Catan','Carcassonne','Wizard','Dobble','UNO','Codenames','Activity','Mario Kart'];
+    S.games = S.games.filter(g => !(SAMPLE.includes(g.name) && !g.played && !g.fav));
+  }
+  S.games = S.games.map(g => Object.assign({kategorie:'', standort:'', note:'', rules:'', tentative:false, durApprox:false, played:0, fav:false}, g));
+  if ((S.v||0) < 3) {
+    catalogRows().forEach(r => {
+      const ex = findGame(r.name);
+      if (!ex) { S.games.push(newGame(r)); return; }
+      if (!ex.kategorie) ex.kategorie = r.kategorie;
+      if (!ex.standort) ex.standort = r.standort;
+      if (!ex.note && r.note) ex.note = r.note;
+      if (r.tentative) ex.tentative = true;
+      if (r.min == null && ex.min != null && !ex.played) { ex.min = null; ex.max = null; }
+    });
+  }
+  if ((S.v||0) < 4) {
+    const D = {}; DUR.split('\n').forEach(l => { const [n,d,u] = l.split('|'); D[normName(n)] = {dur:+d, approx:u==='u'}; });
+    S.games.forEach(g => { const d = D[normName(g.name)]; if (d && !g.dur) { g.dur = d.dur; g.durApprox = d.approx; } });
+  }
+  S.finder = Object.assign({players:4,time:60,types:[]}, S.finder);
+  S.nights = S.nights || [];
+  S.score = Object.assign({game:'', gameId:null, lowWins:false, players:[]}, S.score);
+  S.history = (S.history||[]).map(h => {
+    h = Object.assign({rating:0, comment:'', lowWins:false, winners:[], results:[]}, h);
+    if (!h.id) h.id = uid();
+    if (h.gameId === undefined) { const g = findGame(h.game); h.gameId = g ? g.id : null; }
+    return h;
+  });
+  if ((S.v||0) >= 1 && S.seenIntro === undefined) S.seenIntro = false;
+  S.v = 6;
+}
+
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)); } catch(e) { S = null; }
+if (!S || !Array.isArray(S.games)) S = defaults();
+migrate();
+try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} updateStat(); }
+function updateStat(){
+  const c = {}; S.games.forEach(g => { if (g.standort) c[g.standort] = (c[g.standort]||0)+1; });
+  document.getElementById('stat').textContent = `${S.games.length} Spiele` + (Object.keys(c).length ? ' · ' + locations().map(l => `${c[l]} ${l}`).join(' · ') : '');
+}
+function locations(){
+  const c = {};
+  S.games.forEach(g => { if (g.standort) c[g.standort] = (c[g.standort]||0) + 1; });
+  return Object.keys(c).sort((a,b) => c[b]-c[a] || a.localeCompare(b,'de'));
+}
+function stats(g){
+  const h = S.history.filter(x => x.gameId === g.id);
+  const rated = h.filter(x => x.rating);
+  const scored = h.filter(x => x.results.some(r => r.pts));
+  let record = null;
+  if (scored.length) {
+    const low = scored[0].lowWins;
+    scored.forEach(x => x.results.forEach(r => { if (!record || (low ? r.pts < record.pts : r.pts > record.pts)) record = {name:r.name, pts:r.pts, low}; }));
+  }
+  return {count:h.length, last:h[0] ? h[0].date : null, avg: rated.length ? rated.reduce((a,x)=>a+x.rating,0)/rated.length : null, record};
+}
+const seg = (items, cur) => `<nav class="seg" aria-label="Unterbereich">${items.map(([r,l]) => `<a href="#${r}" ${r===cur?'aria-current="page"':''}>${l}</a>`).join('')}</nav>`;
+
+/* ---------- Import & Export ---------- */
+const normType = s => { s = String(s||'').trim().toLowerCase(); if (!s) return 'Brett'; return TYPES.find(t => t.toLowerCase().startsWith(s.slice(0,4)) || s.startsWith(t.toLowerCase().slice(0,4))) || 'Brett'; };
+const int = v => { const n = parseInt(v,10); return isNaN(n) ? null : n; };
+const yes = v => /^(ja|yes|true|1)$/i.test(String(v||'').trim());
+function addGames(rows){
+  let added = 0, skipped = 0;
+  rows.forEach(r => {
+    const name = String(r.name||'').trim(); if (!name) return;
+    if (findGame(name)) { skipped++; return; }
+    let min = int(r.min), max = int(r.max);
+    if (min != null && max == null) max = min;
+    if (min == null && max != null) min = max;
+    if (min != null && max < min) [min,max] = [max,min];
+    S.games.push(newGame({name, type:normType(r.type), kategorie:String(r.kategorie||'').trim(), standort:String(r.standort||'').trim(),
+      min, max, dur:int(r.dur), note:String(r.note||'').trim(), rules:String(r.rules||'').trim(), tentative:yes(r.tentative), durApprox:yes(r.durApprox), fav:yes(r.fav)}));
+    added++;
+  });
+  save();
+  return `${added} ${added===1?'Spiel':'Spiele'} übernommen` + (skipped ? `, ${skipped} schon vorhanden` : '') + '.';
+}
+function parsePaste(text){
+  return text.split(/\r?\n/).map(line => {
+    const c = line.split(/[;\t]/).map(s => s.trim());
+    const [a,b] = (c[2]||'').split(/\s*[-–]\s*/);
+    return {name:c[0], type:c[1], min:a, max:b||a, dur:c[3], standort:c[4]};
+  });
+}
+function parseCsv(text){
+  text = text.replace(/^\ufeff/, '');
+  const first = text.split('\n')[0];
+  const sep = (first.match(/;/g)||[]).length >= (first.match(/,/g)||[]).length ? ';' : ',';
+  const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"' && text[i+1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === sep) { row.push(cur); cur = ''; }
+    else if (ch === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+    else if (ch !== '\r') cur += ch;
+  }
+  if (cur || row.length) { row.push(cur); rows.push(row); }
+  const MAP = {'name':'name','spiel':'name','art':'type','kategorie':'kategorie','standort':'standort','min. personen':'min','max. personen':'max',
+    'dauer (min.)':'dur','dauer':'dur','liebling':'fav','zusatzinfo':'note','vorläufig':'tentative','dauer geschätzt':'durApprox','hausregeln & notizen':'rules','hausregeln':'rules'};
+  let cols = ['name','type','min','max','dur'];
+  if (rows.length && MAP[(rows[0][0]||'').trim().toLowerCase()]) cols = rows.shift().map(h => MAP[h.trim().toLowerCase()] || null);
+  return rows.map(c => { const o = {}; cols.forEach((k,i) => { if (k) o[k] = c[i]; }); return o; });
+}
+const csvCell = v => { v = String(v ?? ''); return /[;"\n\r]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v; };
+function gamesCsv(){
+  const head = ['Name','Art','Kategorie','Standort','Min. Personen','Max. Personen','Dauer (Min.)','Dauer geschätzt','Partien','Ø Bewertung','Liebling','Zusatzinfo','Hausregeln & Notizen','Vorläufig'];
+  const lines = [head, ...[...S.games].sort((a,b)=>a.name.localeCompare(b.name,'de')).map(g => { const s = stats(g);
+    return [g.name,g.type,g.kategorie,g.standort,g.min??'',g.max??'',g.dur??'',g.durApprox?'ja':'nein',s.count,s.avg?s.avg.toFixed(1).replace('.',','):'',g.fav?'ja':'nein',g.note,g.rules,g.tentative?'ja':'nein']; })];
+  return '\ufeff' + lines.map(l => l.map(csvCell).join(';')).join('\r\n');
+}
+function historyCsv(){
+  const lines = [['Datum','Spiel','Gewinner','Ergebnisse','Bewertung','Kommentar'], ...S.history.map(h =>
+    [new Date(h.date).toLocaleDateString('de-CH'), h.game, h.winners.join(' & '), h.results.map(r=>r.name+' '+r.pts).join(', '), h.rating||'', h.comment])];
+  return '\ufeff' + lines.map(l => l.map(csvCell).join(';')).join('\r\n');
+}
+let dl = null;
+const dataMsg = t => { const m = document.getElementById('dataMsg'); if (m) m.textContent = t; };
+async function saveFile(filename, data){
+  try { if (!dl && window.claude && claude.use) dl = await claude.use('downloads'); } catch(e) {}
+  if (dl) {
+    try { await dl.save({filename, data}); dataMsg('Gespeichert: ' + filename); }
+    catch(e) {
+      if (e && e.code === 'declined') dataMsg('Download abgebrochen.');
+      else if (e && e.code === 'rate_limited') dataMsg('Bitte kurz warten und nochmals tippen.');
+      else dataMsg('Download ist hier gerade nicht möglich.');
+    }
+    return;
+  }
+  const blob = new Blob([data], {type: filename.endsWith('.csv') ? 'text/csv' : 'application/json'});
+  const file = typeof File === 'function' ? new File([blob], filename, {type: blob.type}) : null;
+  if (file && navigator.canShare && navigator.canShare({files:[file]}) && /iPhone|iPad|Android/i.test(navigator.userAgent)) {
+    try { await navigator.share({files:[file], title:filename}); dataMsg('Gespeichert: ' + filename); return; } catch(e) { if (e && e.name === 'AbortError') { dataMsg('Abgebrochen.'); return; } }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+  dataMsg('Gespeichert: ' + filename);
+}
+function importFile(file){
+  const r = new FileReader();
+  r.onload = () => {
+    const text = String(r.result);
+    if (/\.json$/i.test(file.name) || text.trim().startsWith('{')) {
+      let d; try { d = JSON.parse(text); } catch(e) { dataMsg('Die Datei ist kein gültiges Backup.'); return; }
+      if (!d || !Array.isArray(d.games)) { dataMsg('Die Datei ist kein Ludothek-Backup.'); return; }
+      if (!confirm('Das Backup ersetzt alle Daten auf diesem Gerät (Spiele, Partien, Abende). Weiter?')) return;
+      S = Object.assign(defaults(), d, {seenIntro:true}); migrate(); save(); vSammlung(); dataMsg(`Backup eingelesen: ${S.games.length} Spiele, ${S.history.length} Partien.`);
+    } else {
+      const t = addGames(parseCsv(text)); vSammlung(); dataMsg(t);
+    }
+  };
+  r.onerror = () => dataMsg('Die Datei konnte nicht gelesen werden.');
+  r.readAsText(file);
+}
+
+const V = document.getElementById('view');
+let ui = {search:'', typeFilter:'', locFilter:'', showFilter:false, editing:null, open:null, adding:false, pick:null, rateFor:null, rateVal:0, rateComment:'',
+  logGame:'', dice:2, diceVals:[3,5], timer:null, timeLeft:0, starter:'', names:null, teamCount:2, teams:[], lastPlay:'auslosen'};
+
+/* ---------- Sammlung ---------- */
+function vSammlung(){
+  const counts = {}; S.games.forEach(g => { const k = g.standort || NOLOC; counts[k] = (counts[k]||0) + 1; });
+  const locs = [...locations(), ...(counts[NOLOC] ? [NOLOC] : [])];
+  const nFilter = (ui.typeFilter?1:0) + (ui.locFilter?1:0);
+  const editGame = ui.editing && ui.editing !== 'new' ? S.games.find(g => g.id === ui.editing) : null;
+  V.innerHTML = `
+    ${ui.editing ? formGame(editGame) : ''}
+    <div class="searchrow">
+      <input type="search" id="search" placeholder="Spiel suchen" value="${esc(ui.search)}" aria-label="Spiel suchen">
+      <button class="btn alt small" data-act="toggleFilter" aria-expanded="${ui.showFilter}">Filter${nFilter?` (${nFilter})`:''}</button>
+    </div>
+    ${ui.showFilter ? `<div class="panel">
+      <label style="margin-top:0">Standort</label>
+      <div class="chips">
+        <button class="chip" data-act="lf" data-v="" aria-pressed="${ui.locFilter===''}">Alle</button>
+        ${locs.map(l=>`<button class="chip" data-act="lf" data-v="${esc(l)}" aria-pressed="${ui.locFilter===l}">${esc(l)} <small>${counts[l]}</small></button>`).join('')}
+      </div>
+      <label>Art</label>
+      <div class="chips">
+        ${['',...TYPES.filter(t=>S.games.some(g=>g.type===t))].map(t=>`<button class="chip" data-act="tf" data-v="${t}" aria-pressed="${ui.typeFilter===t}">${t||'Alle'}</button>`).join('')}
+        <button class="chip" data-act="tf" data-v="fav" aria-pressed="${ui.typeFilter==='fav'}">★ Lieblinge</button>
+      </div>
+    </div>` : ''}
+    <div class="row" style="margin-bottom:10px"><span class="meta grow" id="gcount"></span>${ui.editing ? '' : `<button class="btn small" data-act="addGame">+ Spiel</button>`}</div>
+    <div class="list" id="glist"></div>
+    <details class="more">
+      <summary>Spiele importieren und Daten sichern</summary>
+      <div class="panel">
+        <h3>Liste einfügen</h3>
+        <label for="paste">Ein Spiel pro Zeile, optional mit Art, Personen, Minuten und Standort: „Skyjo; Karten; 2-8; 30; Schrank“</label>
+        <textarea id="paste" rows="4"></textarea>
+        <div class="row" style="margin-top:10px"><button class="btn small" data-act="paste">Spiele übernehmen</button><span class="meta" id="pasteMsg" aria-live="polite"></span></div>
+      </div>
+      <div class="panel">
+        <h3>Daten sichern</h3>
+        <p class="meta" style="margin:4px 0 12px">Alles ist nur auf diesem Gerät gespeichert. Mit dem Backup stellst du es wieder her oder bringst es auf ein anderes Gerät.</p>
+        <div class="row">
+          <button class="btn small" data-act="expJson">Backup herunterladen</button>
+          <button class="btn small alt" data-act="impBtn">Backup einlesen</button>
+          <button class="btn small alt" data-act="expCsv">Spiele als CSV</button>
+          <button class="btn small alt" data-act="expHist">Partien als CSV</button>
+          <input type="file" id="impFile" accept=".json,.csv,application/json,text/csv" hidden>
+        </div>
+        <div class="meta" id="dataMsg" aria-live="polite" style="margin-top:8px"></div>
+      </div>
+    </details>`;
+  renderGames();
+  document.getElementById('search').addEventListener('input', e => { ui.search = e.target.value; renderGames(); });
+  document.getElementById('impFile').addEventListener('change', e => { const f = e.target.files[0]; if (f) importFile(f); e.target.value = ''; });
+}
+function formGame(g){
+  const isNew = !g;
+  g = g || {name:'', type:'Brett', kategorie:'', standort:ui.locFilter && ui.locFilter!==NOLOC ? ui.locFilter : '', min:2, max:4, dur:null, note:'', rules:'', tentative:false, durApprox:false};
+  const kats = [...new Set(S.games.map(x=>x.kategorie).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'de'));
+  return `<div class="panel" id="gform">
+    <h3>${isNew ? 'Neues Spiel' : 'Spiel bearbeiten'}</h3>
+    <label for="gn">Name</label><input type="text" id="gn" value="${esc(g.name)}" autocomplete="off">
+    <div class="row">
+      <div class="grow"><label for="gt">Art</label><select id="gt">${TYPES.map(t=>`<option ${t===g.type?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="grow"><label for="gs">Standort</label><input type="text" id="gs" list="standorte" value="${esc(g.standort)}" placeholder="Schrank" autocomplete="off"></div>
+    </div>
+    <datalist id="standorte">${locations().map(l=>`<option value="${esc(l)}">`).join('')}</datalist>
+    <label for="gk">Kategorie</label><input type="text" id="gk" list="kats" value="${esc(g.kategorie)}" placeholder="Stichkartenspiel" autocomplete="off">
+    <datalist id="kats">${kats.map(k=>`<option value="${esc(k)}">`).join('')}</datalist>
+    <div class="row">
+      <div class="grow"><label for="gmin">Mind. Pers.</label><input type="number" id="gmin" value="${g.min ?? ''}" min="1"></div>
+      <div class="grow"><label for="gmax">Max. Pers.</label><input type="number" id="gmax" value="${g.max ?? ''}" min="1"></div>
+      <div class="grow"><label for="gd">Minuten</label><input type="number" id="gd" value="${g.dur ?? ''}" min="5" step="5" placeholder="offen"></div>
+    </div>
+    <div class="meta" style="margin-top:6px">Personen leer lassen, wenn es vom gespielten Spiel abhängt.</div>
+    <label class="check" style="margin-top:10px"><input type="checkbox" id="gda" ${g.durApprox?'checked':''}> Dauer ist nur ein Richtwert</label>
+    <label for="gr">Hausregeln und Notizen</label><textarea id="gr" rows="3" placeholder="Bei uns darf man auf +4 noch +4 legen.">${esc(g.rules)}</textarea>
+    <label for="gnote">Zusatzinfo</label><input type="text" id="gnote" value="${esc(g.note)}" placeholder="Erweiterung vorhanden">
+    <label class="check" style="margin-top:10px"><input type="checkbox" id="gv" ${g.tentative?'checked':''}> Vorläufig, Angaben noch prüfen</label>
+    <div class="meta" id="formMsg" aria-live="polite" style="margin-top:8px"></div>
+    <div class="row" style="margin-top:10px"><button class="btn" data-act="saveGame">Speichern</button><button class="link" data-act="cancelAdd">Abbrechen</button></div>
+  </div>`;
+}
+function renderGames(){
+  const el = document.getElementById('glist'); if (!el) return;
+  const q = normName(ui.search);
+  let list = S.games.filter(g => (!q || normName(g.name+' '+g.kategorie+' '+g.note+' '+g.rules).includes(q)) &&
+    (!ui.typeFilter || (ui.typeFilter==='fav' ? g.fav : g.type===ui.typeFilter)) &&
+    (!ui.locFilter || (ui.locFilter===NOLOC ? !g.standort : g.standort===ui.locFilter)));
+  list.sort((a,b)=> (b.fav-a.fav) || a.name.localeCompare(b.name,'de',{numeric:true}));
+  document.getElementById('gcount').textContent = list.length === S.games.length ? `${list.length} Spiele, A bis Z` : `${list.length} von ${S.games.length} Spielen`;
+  el.innerHTML = list.length ? list.map(g => `
+    <div class="box ${bcls(g.type)} ${ui.open===g.id?'open':''}" style="--r:${tilt(g)}">
+      <div class="head">
+        <button class="gbtn" data-act="open" data-id="${g.id}" aria-expanded="${ui.open===g.id}">
+          <span class="name">${esc(g.name)}${g.tentative?'<span class="badge">vorläufig</span>':''}</span>
+          <span class="sub">${[players(g), durText(g), esc(g.standort)].filter(Boolean).join(' · ')}</span>
+        </button>
+        <button class="fav" data-act="fav" data-id="${g.id}" aria-pressed="${g.fav}" aria-label="Liebling">★</button>
+      </div>
+      ${ui.open===g.id ? detail(g) : ''}
+    </div>`).join('') : `<div class="empty">${S.games.length ? 'Kein Spiel passt. Ändert Suche oder Filter.' : 'Noch leer. Fügt euer erstes Spiel hinzu.'}</div>`;
+}
+function detail(g){
+  const s = stats(g);
+  return `<div class="detail">
+    ${g.rules ? `<div class="meta">Hausregeln und Notizen</div><div class="rules">${esc(g.rules)}</div>` : ''}
+    <dl>
+      <dt>Kategorie</dt><dd>${esc(g.kategorie || g.type)}</dd>
+      <dt>Standort</dt><dd>${esc(g.standort || 'nicht erfasst')}</dd>
+      <dt>Dauer</dt><dd>${g.dur ? durText(g) + (g.durApprox ? ' <span class="meta">(Richtwert)</span>' : '') : 'nicht erfasst'}</dd>
+      ${g.note?`<dt>Zusatzinfo</dt><dd>${esc(g.note)}</dd>`:''}
+      <dt>Partien</dt><dd>${s.count ? `${s.count}, zuletzt am ${dateTxt(s.last)}` : 'noch keine'}</dd>
+      ${s.avg ? `<dt>Bewertung</dt><dd><span class="stars">${starsTxt(s.avg)}</span></dd>` : ''}
+      ${s.record ? `<dt>Rekord</dt><dd>${s.record.pts} Punkte, ${esc(s.record.name)}</dd>` : ''}
+    </dl>
+    <div class="row"><button class="btn small" data-act="startGame" data-id="${g.id}">Partie starten</button><button class="btn small alt" data-act="editGame" data-id="${g.id}">Bearbeiten</button><button class="link" data-act="delGame" data-id="${g.id}">Entfernen</button></div>
+  </div>`;
+}
+function saveGameForm(){
+  const v = id => document.getElementById(id).value.trim();
+  const name = v('gn'), msg = document.getElementById('formMsg');
+  if (!name) { document.getElementById('gn').focus(); msg.textContent = 'Gebt dem Spiel einen Namen.'; return; }
+  const dup = S.games.find(g => normName(g.name) === normName(name) && g.id !== ui.editing);
+  if (dup) { msg.textContent = `„${dup.name}“ ist schon in der Sammlung.`; return; }
+  let min = int(v('gmin')), max = int(v('gmax'));
+  if (min != null && max == null) max = min;
+  if (min == null && max != null) min = max;
+  if (min != null && max < min) [min,max] = [max,min];
+  const data = {name, type:v('gt'), standort:v('gs'), kategorie:v('gk'), min, max, dur:int(v('gd')), note:v('gnote'),
+    rules:document.getElementById('gr').value.trim(), tentative:document.getElementById('gv').checked, durApprox:document.getElementById('gda').checked};
+  if (ui.editing === 'new') { const g = newGame(data); S.games.push(g); ui.open = g.id; }
+  else { const g = S.games.find(g => g.id === ui.editing); Object.assign(g, data); S.history.forEach(h => { if (h.gameId === g.id) h.game = g.name; }); }
+  ui.editing = null; save(); vSammlung();
+}
+function startGame(g){
+  S.score.game = g.name; S.score.gameId = g.id; S.score.players.forEach(p => p.pts = 0);
+  save(); location.hash = 'punkte';
+}
+
+/* ---------- Spielen: Auslosen ---------- */
+function matches(){
+  const f = S.finder;
+  return S.games.filter(g => (g.min == null || (g.min <= f.players && g.max >= f.players)) &&
+    (f.time >= 999 || !g.dur || g.dur <= f.time) && (!f.types.length || f.types.includes(g.type)));
+}
+function vAuslosen(){
+  const f = S.finder, m = matches();
+  const pick = ui.pick && S.games.find(g=>g.id===ui.pick);
+  V.innerHTML = `
+    ${seg([['auslosen','Auslosen'],['punkte','Punkte']],'auslosen')}
+    <div class="panel">
+      <div class="row"><span class="grow" style="font-weight:700">Wie viele seid ihr?</span>
+        <div class="stepper"><button data-act="pl" data-v="-1" aria-label="Weniger">−</button><output>${f.players}</output><button data-act="pl" data-v="1" aria-label="Mehr">+</button></div></div>
+      <label>Wie viel Zeit habt ihr?</label>
+      <div class="chips">${[[15,'15 Min.'],[30,'30 Min.'],[60,'1 Std.'],[90,'1½ Std.'],[999,'Egal']].map(([v,l])=>`<button class="chip" data-act="time" data-v="${v}" aria-pressed="${f.time===v}">${l}</button>`).join('')}</div>
+      <label>Welche Art? <span class="meta">(leer = alle)</span></label>
+      <div class="chips">${TYPES.filter(t=>S.games.some(g=>g.type===t)).map(t=>`<button class="chip" data-act="ftype" data-v="${t}" aria-pressed="${f.types.includes(t)}">${t}</button>`).join('')}</div>
+    </div>
+    <div class="draw" id="draw">
+      <div class="big" id="pickName">${pick ? esc(pick.name) : (m.length ? m.length : '0')}</div>
+      <div class="hint">${pick ? [durText(pick), pick.standort ? 'Standort: '+esc(pick.standort) : ''].filter(Boolean).join(' · ') : (m.length ? (m.length===1?'Spiel passt zu euch':'Spiele passen zu euch') : 'Kein Spiel passt. Lockert die Filter.')}</div>
+    </div>
+    <div class="row" style="margin:16px 0">
+      <button class="btn yellow" data-act="draw" ${m.length?'':'disabled'}>${pick?'Nochmals auslosen':'Zufällig auslosen'}</button>
+      ${pick ? `<button class="btn alt" data-act="playIt">Das spielen wir</button>` : ''}
+    </div>
+    ${m.length ? `<div class="panel"><h3 style="margin-bottom:6px">Alle passenden Spiele</h3>${[...m].sort((a,b)=>(b.fav-a.fav)||a.name.localeCompare(b.name,'de',{numeric:true})).map(g=>`<div class="pick"><span class="dot" style="background:${TCOL[g.type]}" aria-hidden="true"></span><div class="grow"><div style="font-weight:700">${g.fav?'★ ':''}${esc(g.name)}</div><div class="meta">${[players(g), durText(g), esc(g.standort)].filter(Boolean).join(' · ')}</div></div><button class="btn small alt" data-act="choose" data-id="${g.id}">Wählen</button></div>`).join('')}</div>` : ''}`;
+}
+function doDraw(){
+  const m = matches(); if (!m.length) return;
+  const pool = m.length > 1 ? m.filter(g=>g.id!==ui.pick) : m;
+  const final = pool[Math.floor(Math.random()*pool.length)];
+  const nm = document.getElementById('pickName');
+  document.getElementById('draw').scrollIntoView({block:'center', behavior: reduced?'auto':'smooth'});
+  const finish = () => { ui.pick = final.id; vAuslosen(); const d = document.getElementById('draw'); d.classList.add('landed'); d.scrollIntoView({block:'center'}); };
+  if (reduced || m.length === 1) return finish();
+  let i = 0; const steps = 14;
+  const tick = () => { nm.textContent = m[Math.floor(Math.random()*m.length)].name; if (++i < steps) setTimeout(tick, 40 + i*i*1.6); else finish(); };
+  tick();
+}
+
+/* ---------- Spielen: Punkte ---------- */
+function vPunkte(){
+  const sc = S.score, ps = sc.players;
+  const best = ps.length ? (sc.lowWins ? Math.min(...ps.map(p=>p.pts)) : Math.max(...ps.map(p=>p.pts))) : null;
+  const anyPts = ps.some(p=>p.pts!==0);
+  const g = sc.gameId && S.games.find(x => x.id === sc.gameId);
+  const rateEntry = ui.rateFor && S.history.find(h => h.id === ui.rateFor);
+  V.innerHTML = `
+    ${seg([['auslosen','Auslosen'],['punkte','Punkte']],'punkte')}
+    ${rateEntry ? `<div class="panel rate">
+      <h3>Wie war ${rateEntry.game ? '„'+esc(rateEntry.game)+'“' : 'die Partie'}?</h3>
+      <div class="meta" style="margin-top:4px">${rateEntry.winners.length ? esc(rateEntry.winners.join(' & ')) + (rateEntry.winners.length>1?' gewinnen':' gewinnt') : 'Partie gespeichert'}</div>
+      <div class="rateStars" role="group" aria-label="Bewertung">${[1,2,3,4,5].map(n=>`<button data-act="rate" data-v="${n}" aria-pressed="${n<=ui.rateVal}" aria-label="${n} von 5 Sternen">★</button>`).join('')}</div>
+      <input type="text" id="rc" value="${esc(ui.rateComment)}" placeholder="Kommentar, z. B. knappes Finale">
+      <div class="row" style="margin-top:12px"><button class="btn" data-act="saveRate">Speichern</button><button class="link" data-act="skipRate" style="color:inherit">Überspringen</button></div>
+    </div>` : ''}
+    <div class="panel">
+      <label for="sg" style="margin-top:0">Was wird gespielt?</label>
+      <input type="text" id="sg" list="gl" value="${esc(sc.game)}" placeholder="Spiel wählen oder eintippen">
+      <datalist id="gl">${S.games.map(x=>`<option value="${esc(x.name)}">`).join('')}</datalist>
+      <div class="chips" style="margin-top:10px">
+        <button class="chip" data-act="low" data-v="0" aria-pressed="${!sc.lowWins}">Meiste Punkte gewinnt</button>
+        <button class="chip" data-act="low" data-v="1" aria-pressed="${sc.lowWins}">Wenigste gewinnt</button>
+      </div>
+      ${g && g.rules ? `<details style="margin-top:12px"><summary style="font-weight:700;cursor:pointer">Eure Hausregeln</summary><div class="rules" style="margin-top:8px">${esc(g.rules)}</div></details>` : ''}
+    </div>
+    <div class="panel">
+      ${ps.length ? ps.map(p=>`
+        <div class="player">
+          <span class="token" style="background:${p.color}" aria-hidden="true"></span>
+          <div class="grow">
+            <div style="font-weight:700">${esc(p.name)}${anyPts && p.pts===best?' 👑':''}</div>
+            <div class="quick">
+              <button data-act="pt" data-id="${p.id}" data-v="-1">−1</button>
+              <button data-act="pt" data-id="${p.id}" data-v="1">+1</button>
+              <button data-act="pt" data-id="${p.id}" data-v="5">+5</button>
+              <input type="number" inputmode="numeric" placeholder="±" data-custom="${p.id}" aria-label="Eigene Zahl für ${esc(p.name)}">
+              <button data-act="ptc" data-id="${p.id}">OK</button>
+            </div>
+          </div>
+          <div class="pts" aria-live="polite">${p.pts}</div>
+        </div>`).join('') : `<div class="empty" style="padding:8px">Wer spielt mit?</div>`}
+      <div class="row" style="margin-top:12px">
+        <input type="text" id="pn" placeholder="Name" style="flex:1" autocomplete="off">
+        <button class="btn small" data-act="addP">Dazu</button>
+      </div>
+    </div>
+    ${ps.length ? `<div class="row" style="margin-bottom:8px">
+      <button class="btn red" data-act="finish">Partie beenden</button>
+      <button class="btn alt small" data-act="reset">Auf null</button>
+      <button class="link" data-act="clearP">Alle entfernen</button></div>
+      <div class="meta">Beendete Partien landen im Logbuch.</div>` : ''}`;
+  document.getElementById('sg').addEventListener('change', e => { S.score.game = e.target.value.trim(); const m = findGame(S.score.game); S.score.gameId = m ? m.id : null; if (m) S.score.game = m.name; save(); vPunkte(); });
+  document.getElementById('pn').addEventListener('keydown', e => { if (e.key==='Enter') addPlayer(); });
+  const rc = document.getElementById('rc'); if (rc) rc.addEventListener('input', e => ui.rateComment = e.target.value);
+}
+function addPlayer(){
+  const el = document.getElementById('pn'); const name = el.value.trim(); if (!name) return;
+  S.score.players.push({id:uid(), name, pts:0, color:COLORS[S.score.players.length % COLORS.length]});
+  save(); vPunkte(); document.getElementById('pn').focus();
+}
+function finishGame(){
+  const sc = S.score, ps = sc.players;
+  const anyPts = ps.some(p=>p.pts!==0);
+  const best = sc.lowWins ? Math.min(...ps.map(p=>p.pts)) : Math.max(...ps.map(p=>p.pts));
+  const m = sc.gameId ? S.games.find(x=>x.id===sc.gameId) : findGame(sc.game);
+  const entry = {id:uid(), date:Date.now(), gameId:m?m.id:null, game:m?m.name:sc.game, lowWins:sc.lowWins,
+    winners: anyPts ? ps.filter(p=>p.pts===best).map(p=>p.name) : [], results: ps.map(p=>({name:p.name, pts:p.pts})), rating:0, comment:''};
+  S.history.unshift(entry); S.history = S.history.slice(0,1000);
+  ps.forEach(p=>p.pts=0);
+  ui.rateFor = entry.id; ui.rateVal = 0; ui.rateComment = '';
+  save(); vPunkte(); window.scrollTo({top:0, behavior: reduced?'auto':'smooth'});
+}
+
+/* ---------- Logbuch ---------- */
+function vLogbuch(){
+  const H = S.history;
+  if (!H.length) { V.innerHTML = `<h2>Logbuch</h2><div class="panel empty">Hier erscheint jede Partie, die ihr unter «Spielen» und «Punkte» beendet.<br><br><a class="btn small" href="#punkte" style="text-decoration:none;display:inline-block">Partie starten</a></div>`; return; }
+  const key = h => h.gameId || 'n:' + normName(h.game || 'ohne namen');
+  const groups = {};
+  H.forEach(h => { const k = key(h); (groups[k] = groups[k] || {name:h.game || 'Ohne Namen', list:[]}).list.push(h); });
+  const gl = Object.entries(groups).map(([k,v]) => { const r = v.list.filter(x=>x.rating);
+    return {k, name:v.name, count:v.list.length, last:v.list[0].date, avg:r.length ? r.reduce((a,x)=>a+x.rating,0)/r.length : null}; })
+    .sort((a,b)=> b.count-a.count || b.last-a.last);
+  const maxC = gl[0].count;
+  const wins = {}; H.forEach(h => h.winners.forEach(w => wins[w]=(wins[w]||0)+1));
+  const board = Object.entries(wins).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const shown = ui.logGame && groups[ui.logGame] ? H.filter(h => key(h) === ui.logGame) : H;
+  const month = new Date(); month.setDate(1); month.setHours(0,0,0,0);
+  V.innerHTML = `
+    <h2>Logbuch</h2>
+    <div class="figs">
+      <div class="fig"><b>${H.length}</b><span>Partien</span></div>
+      <div class="fig"><b>${gl.length}</b><span>Spiele</span></div>
+      <div class="fig"><b>${H.filter(h=>h.date>=month.getTime()).length}</b><span>diesen Monat</span></div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:6px">Das habt ihr gespielt</h3>
+      ${gl.map(x=>`<div class="entry"><button class="lg" data-act="logGame" data-v="${esc(x.k)}" aria-pressed="${ui.logGame===x.k}">
+          <span style="font-weight:700">${esc(x.name)}</span>
+          <span class="meta"> · ${x.count}× · zuletzt ${dateTxt(x.last)}</span>${x.avg?` <span class="stars">${starsTxt(x.avg)}</span>`:''}
+          <span class="bar" style="width:${Math.max(8, x.count/maxC*100)}%"></span>
+        </button></div>`).join('')}
+    </div>
+    ${board.length ? `<div class="panel"><h3 style="margin-bottom:6px">Bestenliste</h3>${board.map(([n,w],i)=>`<div class="entry">${['🥇','🥈','🥉'][i]||(i+1)+'.'} ${esc(n)} <span class="meta">${w} ${w===1?'Sieg':'Siege'}</span></div>`).join('')}</div>` : ''}
+    <div class="panel">
+      <div class="row" style="margin-bottom:6px"><h3 class="grow">${ui.logGame && groups[ui.logGame] ? esc(groups[ui.logGame].name) : 'Alle Partien'}</h3>${ui.logGame?`<button class="link" data-act="logGame" data-v="">Alle zeigen</button>`:''}</div>
+      ${shown.map(h=>`<div class="entry">
+        <div class="row"><strong class="grow">${esc(h.game||'Ohne Namen')}</strong><span class="meta">${dateTxt(h.date)}</span></div>
+        ${h.winners.length ? `<div>${esc(h.winners.join(' & '))} ${h.winners.length>1?'gewinnen':'gewinnt'}</div>` : ''}
+        <div class="meta">${h.results.some(r=>r.pts) ? h.results.map(r=>esc(r.name)+' '+r.pts).join(', ') : esc(h.results.map(r=>r.name).join(', '))}</div>
+        ${h.rating ? `<div class="stars">${starsTxt(h.rating)}</div>` : ''}
+        ${h.comment ? `<div><em>${esc(h.comment)}</em></div>` : ''}
+        <button class="link" data-act="delEntry" data-id="${h.id}">Löschen</button>
+      </div>`).join('')}
+    </div>`;
+}
+
+/* ---------- Helfer: am Tisch ---------- */
+const PIPS = {1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+const dieHTML = v => `<div class="die">${Array.from({length:9},(_,i)=>`<span class="${PIPS[v].includes(i)?'on':''}"></span>`).join('')}</div>`;
+const fmt = s => Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+const nameList = () => (ui.names ?? S.score.players.map(p=>p.name).join(', ')).split(',').map(s=>s.trim()).filter(Boolean);
+function vHelfer(){
+  const names = ui.names ?? S.score.players.map(p=>p.name).join(', ');
+  V.innerHTML = `
+    ${seg([['helfer','Am Tisch'],['abende','Spieleabende']],'helfer')}
+    <div class="panel">
+      <label for="names" style="margin-top:0">Wer spielt mit? (mit Komma trennen)</label>
+      <input type="text" id="names" value="${esc(names)}" placeholder="Anna, Ben, Chiara, Dario">
+      <div class="starter" aria-live="polite">${esc(ui.starter)}</div>
+      <div class="row" style="justify-content:center"><button class="btn yellow" data-act="starter">Wer beginnt?</button></div>
+    </div>
+    <div class="panel">
+      <div class="row"><h3 class="grow">Teams</h3>
+        <div class="stepper"><button data-act="tc" data-v="-1" aria-label="Weniger Teams">−</button><output>${ui.teamCount}</output><button data-act="tc" data-v="1" aria-label="Mehr Teams">+</button></div></div>
+      <div style="margin:10px 0" aria-live="polite">${ui.teams.map((t,i)=>`<div class="team"><span class="token sm" style="background:${COLORS[i%COLORS.length]}" aria-hidden="true"></span><strong>Team ${i+1}</strong><span class="grow">${esc(t.join(', '))}</span></div>`).join('')}</div>
+      <div class="row" style="justify-content:center"><button class="btn" data-act="teams">${ui.teams.length?'Neu mischen':'Teams bilden'}</button></div>
+    </div>
+    <div class="panel">
+      <div class="row"><h3 class="grow">Würfel</h3>
+        <div class="stepper"><button data-act="dc" data-v="-1" aria-label="Weniger Würfel">−</button><output>${ui.dice}</output><button data-act="dc" data-v="1" aria-label="Mehr Würfel">+</button></div></div>
+      <div class="dice">${ui.diceVals.map(dieHTML).join('')}</div>
+      <div class="sum" aria-live="polite">Summe ${ui.diceVals.reduce((a,b)=>a+b,0)}</div>
+      <div class="row" style="justify-content:center;margin-top:12px"><button class="btn" data-act="roll">Würfeln</button></div>
+    </div>
+    <div class="panel">
+      <h3>Sanduhr</h3>
+      <div class="timer" id="tm">${fmt(ui.timeLeft)}</div>
+      <div class="chips" style="justify-content:center">
+        ${[30,60,90,120].map(s=>`<button class="chip" data-act="timer" data-v="${s}">${s<60?s+' Sek.':(s/60)+' Min.'}</button>`).join('')}
+        ${ui.timer!==null?`<button class="chip" data-act="stop" aria-pressed="true">Stopp</button>`:''}
+      </div>
+    </div>`;
+  document.getElementById('names').addEventListener('input', e => ui.names = e.target.value);
+}
+function startTimer(sec){
+  clearInterval(ui.timer); ui.timeLeft = sec;
+  ui.timer = setInterval(()=>{
+    ui.timeLeft--;
+    const el = document.getElementById('tm');
+    if (ui.timeLeft <= 0){ clearInterval(ui.timer); ui.timer=null; ui.timeLeft=0; if (navigator.vibrate) navigator.vibrate([300,120,300]); if (route()==='helfer') vHelfer(); return; }
+    if (el) el.textContent = fmt(ui.timeLeft);
+  },1000);
+  vHelfer();
+}
+function shuffle(a){ a = [...a]; for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+
+/* ---------- Helfer: Abende ---------- */
+function vAbende(){
+  const today = new Date().toISOString().slice(0,10);
+  const sorted = [...S.nights].sort((a,b)=> a.date.localeCompare(b.date));
+  const up = sorted.filter(n=>n.date>=today), past = sorted.filter(n=>n.date<today).reverse();
+  V.innerHTML = `
+    ${seg([['helfer','Am Tisch'],['abende','Spieleabende']],'abende')}
+    ${ui.adding ? formNight() : `<button class="btn" data-act="addNight" style="margin-bottom:16px">+ Abend planen</button>`}
+    ${up.length ? up.map(n=>nightCard(n)).join('') : (!ui.adding ? `<div class="panel empty">Wann trefft ihr euch das nächste Mal?</div>` : '')}
+    ${past.length ? `<h3 style="margin:22px 0 10px">Vergangen</h3>` + past.map(n=>nightCard(n,true)).join('') : ''}`;
+}
+function formNight(){
+  return `<div class="panel">
+    <h3>Neuer Abend</h3>
+    <div class="row">
+      <div class="grow"><label for="nd">Datum</label><input type="date" id="nd"></div>
+      <div class="grow"><label for="nt">Zeit</label><input type="time" id="nt" value="19:00"></div>
+    </div>
+    <label for="np">Wo?</label><input type="text" id="np" placeholder="bei uns">
+    <label for="ng">Wer ist eingeladen? (mit Komma trennen)</label><input type="text" id="ng" placeholder="Anna, Ben, Chiara">
+    <label>Welche Spiele kommen mit?</label>
+    <div class="chips" id="nGames" style="max-height:220px;overflow:auto">${[...S.games].sort((a,b)=>b.fav-a.fav||a.name.localeCompare(b.name,'de')).map(g=>`<button class="chip" data-act="nGame" data-id="${g.id}" aria-pressed="false">${esc(g.name)}</button>`).join('')}</div>
+    <label for="nn">Notiz</label><input type="text" id="nn" placeholder="alle bringen Snacks mit">
+    <div class="row" style="margin-top:14px"><button class="btn" data-act="saveNight">Speichern</button><button class="link" data-act="cancelAdd">Abbrechen</button></div>
+  </div>`;
+}
+function nightCard(n, past){
+  const ds = new Date(n.date+'T12:00').toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long'});
+  const yesN = n.guests.filter(g=>g.yes).length;
+  const games = n.games.map(id=>S.games.find(g=>g.id===id)).filter(Boolean);
+  return `<div class="panel night ${past?'past':''}">
+    <div class="row"><div class="grow"><div class="date">${ds}${n.time?`, ${n.time} Uhr`:''}</div>${n.place?`<div class="meta">${esc(n.place)}</div>`:''}</div>
+    <button class="link" data-act="delNight" data-id="${n.id}">Löschen</button></div>
+    ${n.guests.length?`<label>Zusagen: ${yesN} von ${n.guests.length} (antippen)</label>
+    <div class="chips">${n.guests.map((g,i)=>`<button class="chip guest" data-act="guest" data-id="${n.id}" data-i="${i}" aria-pressed="${g.yes}">${esc(g.name)}</button>`).join('')}</div>`:''}
+    ${games.length?`<label>Spiele</label><div>${games.map(g=>esc(g.name)+(g.standort?` <span class="meta">(${esc(g.standort)})</span>`:'')).join(', ')}</div>`:''}
+    ${n.note?`<label>Notiz</label><div>${esc(n.note)}</div>`:''}
+  </div>`;
+}
+
+/* ---------- Anleitung ---------- */
+const sheet = document.getElementById('sheet');
+function openHelp(){ sheet.hidden = false; sheet.querySelector('button').focus(); }
+function closeHelp(){ sheet.hidden = true; if (!S.seenIntro) { S.seenIntro = true; save(); } }
+sheet.addEventListener('click', e => { if (e.target === sheet) closeHelp(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !sheet.hidden) closeHelp(); });
+
+/* ---------- Aktionen ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act, id = b.dataset.id, v = b.dataset.v;
+  switch(a){
+    case 'help': openHelp(); break;
+    case 'closeHelp': closeHelp(); break;
+    case 'toggleFilter': ui.showFilter = !ui.showFilter; vSammlung(); break;
+    case 'tf': ui.typeFilter = v; vSammlung(); break;
+    case 'lf': ui.locFilter = v; vSammlung(); break;
+    case 'addGame': ui.editing = 'new'; vSammlung(); window.scrollTo(0,0); document.getElementById('gn').focus(); break;
+    case 'editGame': ui.editing = id; vSammlung(); window.scrollTo({top:0, behavior: reduced?'auto':'smooth'}); break;
+    case 'saveGame': saveGameForm(); break;
+    case 'cancelAdd': ui.editing = null; ui.adding = false; render(); break;
+    case 'open': ui.open = ui.open === id ? null : id; renderGames(); break;
+    case 'fav': { const g=S.games.find(x=>x.id===id); g.fav=!g.fav; save(); renderGames(); break; }
+    case 'delGame': { const g=S.games.find(x=>x.id===id); if (confirm(`„${g.name}“ aus der Sammlung entfernen? Gespielte Partien bleiben im Logbuch.`)) { S.games=S.games.filter(x=>x.id!==id); save(); vSammlung(); } break; }
+    case 'startGame': startGame(S.games.find(x=>x.id===id)); break;
+    case 'paste': {
+      const ta = document.getElementById('paste'); if (!ta.value.trim()) { ta.focus(); return; }
+      const t = addGames(parsePaste(ta.value)); vSammlung(); document.querySelector('details.more').open = true; document.getElementById('pasteMsg').textContent = t; break;
+    }
+    case 'expJson': saveFile(`ludothek-backup-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(S, null, 2)); break;
+    case 'expCsv': saveFile(`ludothek-spiele-${new Date().toISOString().slice(0,10)}.csv`, gamesCsv()); break;
+    case 'expHist': saveFile(`ludothek-partien-${new Date().toISOString().slice(0,10)}.csv`, historyCsv()); break;
+    case 'impBtn': document.getElementById('impFile').click(); break;
+    case 'pl': S.finder.players = Math.min(30,Math.max(1,S.finder.players + +v)); ui.pick=null; save(); vAuslosen(); break;
+    case 'time': S.finder.time = +v; ui.pick=null; save(); vAuslosen(); break;
+    case 'ftype': { const t=S.finder.types; S.finder.types = t.includes(v)?t.filter(x=>x!==v):[...t,v]; ui.pick=null; save(); vAuslosen(); break; }
+    case 'draw': doDraw(); break;
+    case 'choose': ui.pick = id; vAuslosen(); document.getElementById('draw').scrollIntoView({block:'center', behavior: reduced?'auto':'smooth'}); break;
+    case 'playIt': { const g=S.games.find(x=>x.id===ui.pick); if (!g) return; ui.pick=null; startGame(g); break; }
+    case 'low': S.score.lowWins = v === '1'; save(); vPunkte(); break;
+    case 'addP': addPlayer(); break;
+    case 'pt': { const p=S.score.players.find(x=>x.id===id); p.pts += +v; save(); vPunkte(); break; }
+    case 'ptc': { const inp=document.querySelector(`[data-custom="${id}"]`); const n=parseInt(inp.value,10); if (isNaN(n)) return; S.score.players.find(x=>x.id===id).pts+=n; save(); vPunkte(); break; }
+    case 'reset': S.score.players.forEach(p=>p.pts=0); save(); vPunkte(); break;
+    case 'clearP': if (confirm('Alle Mitspielenden entfernen?')) { S.score.players=[]; save(); vPunkte(); } break;
+    case 'finish': finishGame(); break;
+    case 'rate': ui.rateVal = +v; vPunkte(); break;
+    case 'saveRate': { const h=S.history.find(x=>x.id===ui.rateFor); if (h) { h.rating = ui.rateVal; h.comment = ui.rateComment.trim(); } ui.rateFor=null; save(); vPunkte(); break; }
+    case 'skipRate': ui.rateFor=null; vPunkte(); break;
+    case 'logGame': ui.logGame = ui.logGame === v ? '' : v; vLogbuch(); break;
+    case 'delEntry': if (confirm('Diese Partie aus dem Logbuch löschen?')) { S.history = S.history.filter(h=>h.id!==id); save(); vLogbuch(); } break;
+    case 'addNight': ui.adding = true; vAbende(); break;
+    case 'nGame': b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')!=='true'); break;
+    case 'saveNight': {
+      const date=document.getElementById('nd').value; if (!date) { document.getElementById('nd').focus(); return; }
+      const guests=document.getElementById('ng').value.split(',').map(s=>s.trim()).filter(Boolean).map(name=>({name,yes:false}));
+      const games=[...document.querySelectorAll('#nGames [aria-pressed="true"]')].map(x=>x.dataset.id);
+      S.nights.push({id:uid(),date,time:document.getElementById('nt').value,place:document.getElementById('np').value.trim(),guests,games,note:document.getElementById('nn').value.trim()});
+      ui.adding=false; save(); vAbende(); break;
+    }
+    case 'guest': { const n=S.nights.find(x=>x.id===id); const g=n.guests[+b.dataset.i]; g.yes=!g.yes; save(); vAbende(); break; }
+    case 'delNight': if (confirm('Diesen Abend löschen?')) { S.nights=S.nights.filter(x=>x.id!==id); save(); vAbende(); } break;
+    case 'dc': ui.dice = Math.min(6,Math.max(1,ui.dice + +v)); ui.diceVals = Array.from({length:ui.dice},(_,i)=>ui.diceVals[i]||1); vHelfer(); break;
+    case 'roll': ui.diceVals = Array.from({length:ui.dice},()=>1+Math.floor(Math.random()*6)); vHelfer(); document.querySelectorAll('.die').forEach(d=>d.classList.add('roll')); break;
+    case 'tc': ui.teamCount = Math.min(6,Math.max(2,ui.teamCount + +v)); ui.teams=[]; vHelfer(); break;
+    case 'teams': {
+      const names = nameList(); if (names.length < 2) { document.getElementById('names').focus(); return; }
+      const n = Math.min(ui.teamCount, names.length), t = Array.from({length:n},()=>[]);
+      shuffle(names).forEach((x,i) => t[i % n].push(x)); ui.teams = t; vHelfer(); break;
+    }
+    case 'starter': {
+      const names = nameList(); if (!names.length) { document.getElementById('names').focus(); return; }
+      const winner = names[Math.floor(Math.random()*names.length)];
+      const el=document.querySelector('.starter'); let i=0;
+      if (reduced) { ui.starter = winner+' beginnt'; el.textContent=ui.starter; break; }
+      const t=setInterval(()=>{ el.textContent=names[i++%names.length]; if(i>12){clearInterval(t); ui.starter=winner+' beginnt'; el.textContent=ui.starter;} },70);
+      break;
+    }
+    case 'timer': startTimer(+v); break;
+    case 'stop': clearInterval(ui.timer); ui.timer=null; ui.timeLeft=0; vHelfer(); break;
+  }
+});
+
+/* ---------- Navigation ---------- */
+const VIEWS = {sammlung:vSammlung, auslosen:vAuslosen, punkte:vPunkte, logbuch:vLogbuch, helfer:vHelfer, abende:vAbende};
+const TAB = {sammlung:'sammlung', auslosen:'spielen', punkte:'spielen', logbuch:'logbuch', helfer:'helfer', abende:'helfer'};
+const ALIAS = {finder:'auslosen', wuerfeln:'helfer'};
+function route(){ let h = location.hash.slice(1); h = ALIAS[h] || h; return VIEWS[h] ? h : 'sammlung'; }
+let last = null;
+function render(){
+  const r = route();
+  if (r !== last) { ui.adding = false; ui.editing = null; last = r; window.scrollTo(0,0); }
+  if (TAB[r] === 'spielen') ui.lastPlay = r;
+  document.querySelectorAll('nav.tabs a').forEach(a => {
+    if (a.dataset.tab === 'spielen') a.setAttribute('href', '#' + ui.lastPlay);
+    a.setAttribute('aria-current', a.dataset.tab === TAB[r] ? 'page' : 'false');
+  });
+  VIEWS[r]();
+}
+window.addEventListener('hashchange', render);
+updateStat(); render();
+if (!S.seenIntro) openHelp();
+if ('serviceWorker' in navigator && location.protocol === 'https:' && /vercel\.app$|^localhost$/.test(location.hostname)) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
