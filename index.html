@@ -32,7 +32,7 @@
 :root[data-theme="dark"]{--bg:#17152C; --card:#221F3D; --ink:#FFF7E8; --muted:#A9A5C7; --line:#35315A; --soft:#2B2850; color-scheme:dark;}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:100px;-webkit-tap-highlight-color:transparent}
+body{margin:0;touch-action:manipulation;background:var(--bg);color:var(--ink);font:400 17px/1.5 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:100px;-webkit-tap-highlight-color:transparent}
 h1,h2,h3,.disp{font-family:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;margin:0;line-height:1.05;letter-spacing:-.02em}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -59,6 +59,8 @@ h3{font-size:19px;font-weight:800}
 .link{background:none;border:0;color:var(--muted);text-decoration:underline;padding:4px}
 input[type=text],input[type=number],input[type=date],input[type=time],input[type=search],select,textarea{
   width:100%;resize:vertical;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 13px}
+input,select,textarea,.quick input{font-size:16px}
+button{touch-action:manipulation}
 input:focus,select:focus,textarea:focus{border-color:var(--ink);outline:none}
 label{display:block;font-size:14px;color:var(--muted);margin:12px 0 4px;font-weight:500}
 label.check{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:15px}
@@ -176,6 +178,11 @@ details.more[open]>summary::before{content:"– "}
 .how div:nth-child(3){background:var(--yellow);color:var(--onYellow)}
 .how div:nth-child(4){background:var(--mint);color:var(--onMint)}
 .how div:nth-child(5){background:var(--card)}
+.install{border:2px solid var(--ink);border-radius:16px;padding:14px;margin:0 0 14px;background:var(--card)}
+.install .os{margin-top:12px}
+.install .os>b{font-family:"Bricolage Grotesque",sans-serif;font-size:17px}
+.install ol{margin:6px 0 0;padding-left:22px}
+.install li{margin:4px 0}
 
 nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:2px solid var(--ink);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
 nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px}
@@ -210,7 +217,27 @@ nav.tabs a[aria-current="page"]{border-color:var(--ink);background:var(--card);b
       <div><b>Spielen</b>Unter «Auslosen» sagt ihr, wie viele ihr seid und wie viel Zeit ihr habt. Die App zeigt alle passenden Spiele oder lost eins aus. Unter «Punkte» zählt ihr mit, am Schluss gibt’s Sterne für die Partie.</div>
       <div><b>Logbuch</b>Was ihr wann gespielt habt, wie oft und wer am meisten gewinnt.</div>
       <div><b>Helfer</b>Wer beginnt, Teams bilden, Würfel und Sanduhr. Unter «Abende» plant ihr den nächsten Spieleabend.</div>
-      <div><b>Gut zu wissen</b>Alles bleibt auf diesem Gerät gespeichert. Ein Backup macht ihr ganz unten in der Sammlung. Auf den Homebildschirm: iPhone in Safari über «Teilen» und «Zum Home-Bildschirm», Android in Chrome über das Menü und «App installieren».</div>
+      <div><b>Gut zu wissen</b>Alles bleibt auf diesem Gerät gespeichert. Ein Backup macht ihr ganz unten in der Sammlung.</div>
+    </div>
+    <div class="install" id="install">
+      <h3>Auf den Homebildschirm</h3>
+      <p class="meta" style="margin:4px 0 0">Dann öffnet sich die Ludothek wie eine App, mit eigenem Icon und ohne Browserleiste.</p>
+      <div class="os" data-os="ios"><b>iPhone</b>
+        <ol>
+          <li>Die Ludothek in <strong>Safari</strong> öffnen.</li>
+          <li>Auf das Teilen-Symbol tippen, das Quadrat mit dem Pfeil nach oben. Je nach Ansicht zuerst auf «…» tippen.</li>
+          <li>Nach unten scrollen und «Zum Home-Bildschirm» wählen.</li>
+          <li>Oben rechts auf «Hinzufügen» tippen.</li>
+        </ol>
+      </div>
+      <div class="os" data-os="android"><b>Android</b>
+        <ol>
+          <li>Die Ludothek in <strong>Chrome</strong> öffnen.</li>
+          <li>Oben rechts auf die drei Punkte tippen.</li>
+          <li>«App installieren» oder «Zum Startbildschirm hinzufügen» wählen.</li>
+          <li>Mit «Installieren» bestätigen.</li>
+        </ol>
+      </div>
     </div>
     <button class="btn yellow" data-act="closeHelp" style="width:100%">Los geht’s</button>
   </div>
@@ -952,40 +979,52 @@ function vAbende(){
   V.innerHTML = `
     ${seg([['helfer','Am Tisch'],['abende','Spieleabende']],'abende')}
     ${ui.adding ? formNight() : `<button class="btn" data-act="addNight" style="margin-bottom:16px">+ Abend planen</button>`}
-    ${up.length ? up.map(n=>nightCard(n)).join('') : (!ui.adding ? `<div class="panel empty">Wann trefft ihr euch das nächste Mal?</div>` : '')}
-    ${past.length ? `<h3 style="margin:22px 0 10px">Vergangen</h3>` + past.map(n=>nightCard(n,true)).join('') : ''}`;
+    ${up.length ? up.map(nightCard).join('') : (!ui.adding ? `<div class="panel empty">Noch kein Abend geplant.</div>` : '')}
+    ${past.length ? `<details class="more"><summary>Vergangene Abende (${past.length})</summary><div class="panel">${past.map(n=>`<div class="entry row"><span class="grow">${dayTxt(n.date)}${n.place?` <span class="meta">· ${esc(n.place)}</span>`:''}</span><button class="link" data-act="delNight" data-id="${n.id}">Löschen</button></div>`).join('')}</div></details>` : ''}`;
+  const ns = document.getElementById('nSearch');
+  if (ns) ns.addEventListener('input', e => { const q = normName(e.target.value); document.querySelectorAll('#nGames .chip').forEach(c => c.style.display = !q || normName(c.textContent).includes(q) ? '' : 'none'); });
 }
+const dayTxt = d => new Date(d+'T12:00').toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long'});
 function formNight(){
   return `<div class="panel">
-    <h3>Neuer Abend</h3>
+    <h3>Neuer Spieleabend</h3>
     <div class="row">
-      <div class="grow"><label for="nd">Datum</label><input type="date" id="nd"></div>
-      <div class="grow"><label for="nt">Zeit</label><input type="time" id="nt" value="19:00"></div>
+      <div class="grow"><label for="nd">Wann?</label><input type="date" id="nd"></div>
+      <div style="width:120px"><label for="nt">Zeit</label><input type="time" id="nt" value="19:00"></div>
     </div>
     <label for="np">Wo?</label><input type="text" id="np" placeholder="bei uns">
-    <label for="ng">Wer ist eingeladen? (mit Komma trennen)</label><input type="text" id="ng" placeholder="Anna, Ben, Chiara">
-    <label>Welche Spiele kommen mit?</label>
-    <div class="chips" id="nGames" style="max-height:220px;overflow:auto">${[...S.games].sort((a,b)=>b.fav-a.fav||a.name.localeCompare(b.name,'de')).map(g=>`<button class="chip" data-act="nGame" data-id="${g.id}" aria-pressed="false">${esc(g.name)}</button>`).join('')}</div>
-    <label for="nn">Notiz</label><input type="text" id="nn" placeholder="alle bringen Snacks mit">
-    <div class="row" style="margin-top:14px"><button class="btn" data-act="saveNight">Speichern</button><button class="link" data-act="cancelAdd">Abbrechen</button></div>
+    <label for="ng">Wer kommt?</label><input type="text" id="ng" placeholder="Anna, Ben, Chiara">
+    <details style="margin-top:14px"><summary style="cursor:pointer;font-weight:700">Spiele und Notiz (optional)</summary>
+      <input type="search" id="nSearch" placeholder="Spiel suchen" style="margin-top:10px" aria-label="Spiel suchen">
+      <div class="chips" id="nGames" style="max-height:180px;overflow:auto;margin-top:8px">${[...S.games].sort((a,b)=>b.fav-a.fav||a.name.localeCompare(b.name,'de')).map(g=>`<button class="chip" data-act="nGame" data-id="${g.id}" aria-pressed="false">${esc(g.name)}</button>`).join('')}</div>
+      <label for="nn">Notiz</label><input type="text" id="nn" placeholder="alle bringen Snacks mit">
+    </details>
+    <div class="row" style="margin-top:16px"><button class="btn" data-act="saveNight">Speichern</button><button class="link" data-act="cancelAdd">Abbrechen</button></div>
   </div>`;
 }
-function nightCard(n, past){
-  const ds = new Date(n.date+'T12:00').toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long'});
+function nightCard(n){
   const yesN = n.guests.filter(g=>g.yes).length;
   const games = n.games.map(id=>S.games.find(g=>g.id===id)).filter(Boolean);
-  return `<div class="panel night ${past?'past':''}">
-    <div class="row"><div class="grow"><div class="date">${ds}${n.time?`, ${n.time} Uhr`:''}</div>${n.place?`<div class="meta">${esc(n.place)}</div>`:''}</div>
+  return `<div class="panel night">
+    <div class="row" style="align-items:flex-start"><div class="grow"><div class="date">${dayTxt(n.date)}</div><div class="meta">${[n.time?n.time+' Uhr':'', esc(n.place)].filter(Boolean).join(' · ')}</div></div>
     <button class="link" data-act="delNight" data-id="${n.id}">Löschen</button></div>
-    ${n.guests.length?`<label>Zusagen: ${yesN} von ${n.guests.length} (antippen)</label>
-    <div class="chips">${n.guests.map((g,i)=>`<button class="chip guest" data-act="guest" data-id="${n.id}" data-i="${i}" aria-pressed="${g.yes}">${esc(g.name)}</button>`).join('')}</div>`:''}
-    ${games.length?`<label>Spiele</label><div>${games.map(g=>esc(g.name)+(g.standort?` <span class="meta">(${esc(g.standort)})</span>`:'')).join(', ')}</div>`:''}
-    ${n.note?`<label>Notiz</label><div>${esc(n.note)}</div>`:''}
+    ${n.guests.length?`<div class="chips" style="margin-top:12px">${n.guests.map((g,i)=>`<button class="chip guest" data-act="guest" data-id="${n.id}" data-i="${i}" aria-pressed="${g.yes}">${g.yes?'✓ ':''}${esc(g.name)}</button>`).join('')}</div>
+    <div class="meta" style="margin-top:6px">${yesN} von ${n.guests.length} zugesagt</div>`:''}
+    ${games.length?`<div style="margin-top:10px"><span class="meta">Spiele:</span> ${games.map(g=>esc(g.name)).join(', ')}</div>`:''}
+    ${n.note?`<div style="margin-top:4px"><span class="meta">Notiz:</span> ${esc(n.note)}</div>`:''}
   </div>`;
 }
 
 /* ---------- Anleitung ---------- */
 const sheet = document.getElementById('sheet');
+(function(){
+  const box = document.getElementById('install'); if (!box) return;
+  if (matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+    box.innerHTML = '<h3>Auf dem Homebildschirm</h3><p class="meta" style="margin:4px 0 0">Die Ludothek ist auf diesem Gerät schon als App installiert.</p>';
+    return;
+  }
+  if (/Android/i.test(navigator.userAgent)) box.appendChild(box.querySelector('[data-os="ios"]'));
+})();
 function openHelp(){ sheet.hidden = false; sheet.querySelector('button').focus(); }
 function closeHelp(){ sheet.hidden = true; if (!S.seenIntro) { S.seenIntro = true; save(); } }
 sheet.addEventListener('click', e => { if (e.target === sheet) closeHelp(); });
